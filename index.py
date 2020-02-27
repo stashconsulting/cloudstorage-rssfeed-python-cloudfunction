@@ -8,14 +8,12 @@ from google.cloud import storage
 storage_client = storage.Client()
 
 # Reference an existing bucket.
-#bucket = client.get_bucket('image-food-files')
-bucket_name = 'image-food-files'
+bucket_name = 'image-food-files2'
+bucket = storage_client.get_bucket(bucket_name)
 folder_name = 'food/'
 blobs = storage_client.list_blobs(bucket_name, prefix=folder_name)
 files = iter(blobs)
 next(files)
-
-print('ejecuto!')
 
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
@@ -33,7 +31,7 @@ def gather_items(parent_element, data):
         title.text = item_data['name']
 
         link = SubElement(item, 'link')
-        link.text = item_data['_properties']['mediaLink']
+        link.text = item_data['_properties']['selfLink']
 
         description = SubElement(item, 'description')
         description.text = item_data['_properties']['name']
@@ -46,5 +44,10 @@ comment = Comment('Generated for Learning')
 channel.append(comment)
 gather_items(channel, files)
 
-with open("rssfeed.xml", "w") as outF:
-    outF.write(prettify(channel))
+def upload_blob(source_file_name, destination_blob_name):
+    blob = bucket.blob(destination_blob_name)
+    blob.upload_from_string(source_file_name)
+
+#with open("rssfeed.xml", "w") as outF:
+    #outF.write(prettify(channel))
+upload_blob(prettify(channel), 'rssfeed.xml')

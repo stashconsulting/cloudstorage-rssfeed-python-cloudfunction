@@ -1,19 +1,7 @@
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement, Comment, tostring
 from xml.dom import minidom
-# Import gcloud
 from google.cloud import storage
-
-# Enable Storage
-storage_client = storage.Client()
-
-# Reference an existing bucket.
-bucket_name = 'image-food-files2'
-bucket = storage_client.get_bucket(bucket_name)
-folder_name = 'food/'
-blobs = storage_client.list_blobs(bucket_name, prefix=folder_name)
-files = iter(blobs)
-next(files)
 
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
@@ -36,18 +24,26 @@ def gather_items(parent_element, data):
         description = SubElement(item, 'description')
         description.text = item_data['_properties']['name']
 
-# Top elements
-channel = Element('channel')
-title = SubElement(channel, 'title')
-title.text = "podcasts"
-comment = Comment('Generated for Learning')
-channel.append(comment)
-gather_items(channel, files)
-
-def upload_blob(source_file_name, destination_blob_name):
+def upload_blob(bucket, content, destination_blob_name):
     blob = bucket.blob(destination_blob_name)
-    blob.upload_from_string(source_file_name)
+    blob.upload_from_string(content)
 
-#with open("rssfeed.xml", "w") as outF:
-    #outF.write(prettify(channel))
-upload_blob(prettify(channel), 'rssfeed.xml')
+
+def main(event, context):
+    # Enable Storage
+    storage_client = storage.Client()
+
+    # Reference an existing bucket.
+    bucket_name = 'image-food-files2'
+    bucket = storage_client.get_bucket(bucket_name)
+    folder_name = 'food/'
+    blobs = storage_client.list_blobs(bucket_name, prefix=folder_name)
+    files = iter(blobs)
+    next(files)
+    channel = Element('channel')
+    title = SubElement(channel, 'title')
+    title.text = "podcasts"
+    comment = Comment('Generated for Learning')
+    channel.append(comment)
+    gather_items(channel, files)
+    upload_blob(bucket, prettify(channel), 'rssfeed.xml')

@@ -1,7 +1,17 @@
-from xml.etree import ElementTree
+""" This code demonstrates writing, deploying, and triggering a 
+
+Cloud Function with a Cloud Storage trigger when 
+
+a "write" of a Cloud Storage Object is successfully finalized.
+"""
 from xml.etree.ElementTree import Element, SubElement, Comment, tostring
 from xml.dom import minidom
 from google.cloud import storage
+from os import environ
+
+bucket_name = environ.get('BUCKET_NAME','')
+folder_name = environ.get('FOLDER_NAME', '')
+storage_client = storage.Client()
 
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
@@ -11,8 +21,15 @@ def prettify(elem):
     return reparsed.toprettyxml(indent="  ")
 
 def gather_items(parent_element, data):
+    """Search into the properties of the object 
+    
+    in the bucket to scrap the title, name, and link.
+    """
     for item_data in data:
+        # I couldn't access to the information by indexing nor
+        # properties, so I converted the data in a dictionary.
         item_data = item_data.__dict__
+
         item = SubElement(parent_element, 'item')
 
         title = SubElement(item, 'title')
@@ -25,21 +42,24 @@ def gather_items(parent_element, data):
         description.text = item_data['_properties']['name']
 
 def upload_blob(bucket, content, destination_blob_name):
+    """Upload a file into the bucket destination.
+    """
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_string(content)
 
 
 def main(event, context):
-    # Enable Storage
-    storage_client = storage.Client()
-
-    # Reference an existing bucket.
-    bucket_name = 'image-food-files2'
+    """Connect and access to the bucket,
+    
+    and write the file.
+    """
     bucket = storage_client.get_bucket(bucket_name)
-    folder_name = 'food/'
     blobs = storage_client.list_blobs(bucket_name, prefix=folder_name)
+
+    # Return an interator and move to the next position, so avoid the folder name
     files = iter(blobs)
     next(files)
+
     channel = Element('channel')
     title = SubElement(channel, 'title')
     title.text = "podcasts"
@@ -47,3 +67,4 @@ def main(event, context):
     channel.append(comment)
     gather_items(channel, files)
     upload_blob(bucket, prettify(channel), 'rssfeed.xml')
+ 

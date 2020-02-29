@@ -1,28 +1,33 @@
-""" This code demonstrates writing, deploying, and triggering a 
+""" This code demonstrates writing, deploying, and triggering a
 
-Cloud Function with a Cloud Storage trigger when 
+Cloud Function with a Cloud Storage trigger when
 
 a "write" of a Cloud Storage Object is successfully finalized.
 """
-from xml.etree.ElementTree import Element, SubElement, Comment, tostring
+from xml.etree.ElementTree import Element, SubElement, \
+    Comment, tostring
 from xml.dom import minidom
 from google.cloud import storage
 from os import environ
 
-bucket_name = environ.get('BUCKET_NAME','')
+bucket_name = environ.get('BUCKET_NAME', '')
 folder_name = environ.get('FOLDER_NAME', '')
+destination_bucket = environ.get('DESTINATION_BUCKET', '')
+
 storage_client = storage.Client()
+
 
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
     """
-    rough_string = ElementTree.tostring(elem, 'utf-8')
+    rough_string = tostring(elem, 'utf-8')
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
 
+
 def gather_items(parent_element, data):
-    """Search into the properties of the object 
-    
+    """Search into the properties of the object
+
     in the bucket to scrap the title, name, and link.
     """
     for item_data in data:
@@ -41,22 +46,24 @@ def gather_items(parent_element, data):
         description = SubElement(item, 'description')
         description.text = item_data['_properties']['name']
 
-def upload_blob(bucket, content, destination_blob_name):
+
+def upload_blob(destination_bucket, content, destination_blob_name):
     """Upload a file into the bucket destination.
     """
+    bucket = storage_client.get_bucket(destination_bucket)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_string(content)
 
 
 def main(event, context):
     """Connect and access to the bucket,
-    
+
     and write the file.
     """
-    bucket = storage_client.get_bucket(bucket_name)
     blobs = storage_client.list_blobs(bucket_name, prefix=folder_name)
 
-    # Return an interator and move to the next position, so avoid the folder name
+    # Return an interator and move to
+    # the next position, so avoid the folder name
     files = iter(blobs)
     next(files)
 
@@ -66,5 +73,8 @@ def main(event, context):
     comment = Comment('Generated for Learning')
     channel.append(comment)
     gather_items(channel, files)
-    upload_blob(bucket, prettify(channel), 'rssfeed.xml')
- 
+    upload_blob(
+        destination_bucket,
+        prettify(channel),
+        'rssfeed.xml'
+    )

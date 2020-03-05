@@ -1,0 +1,39 @@
+swagger: '2.0'
+info:
+  title: Cloud Endpoints + GCF
+  description: Sample API on Cloud Endpoints with a Google Cloud Functions backend
+  version: 1.0.0
+host: getproperties-cvrukhkgjq-uc.a.run.app
+schemes:
+  - https
+  - http
+produces:
+  - application/json
+paths:
+  /callfunction:
+    post:
+      summary: "Add a new file to the collection"
+      operationId: "saveinfo"
+      x-google-backend:
+        address: https://us-central1-project-test-270001.cloudfunctions.net/post_data
+      parameters:
+      - description: "Save file"
+        in: body
+        name: info
+        required: true
+        schema:
+          $ref: "#/definitions/info"
+      responses:
+        405:
+          description: "Invalid input"
+definitions:
+  info:
+    type: "object"
+    properties:
+      title: 
+        type: "string"
+      description: 
+        type: "string"
+      creation_date: 
+        type: "string"
+        format: "date-time"

@@ -5,10 +5,11 @@ using cloud Function with a http trigger
 for any POST request in the API(endpoints) .
 """
 from google.cloud import firestore
+from os import environ
 import datetime
 
 client = firestore.Client()
-collection = u'food-details'
+collection = environ.get('collection', '')
 
 
 def get_data(request):
@@ -20,7 +21,7 @@ def get_data(request):
         u'title': title,
         u'description': description,
         u'creation_date': creation_date,
-        # u'link': u'link',
+        u'link': u'link',
         u'generation_date': datetime.datetime.now()
     }
     client.collection(collection).document().set(data)

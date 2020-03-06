@@ -10,8 +10,8 @@ from xml.dom import minidom
 from google.cloud import firestore, storage
 from os import environ
 
-# collection_name = environ.get('food-details')
 destination_bucket = environ.get('DESTINATION_BUCKET', '')
+collection = environ.get('collection', '')
 database_client = firestore.Client()
 storage_client = storage.Client()
 
@@ -29,7 +29,7 @@ def gather_items(parent_element):
 
     to scrap the title, name, link, creation and generation date.
     """
-    docs = database_client.collection(u'food-details').stream()
+    docs = database_client.collection(collection).stream()
     for doc in docs:
 
         dict_values = doc.to_dict()
@@ -45,7 +45,7 @@ def gather_items(parent_element):
         description.text = dict_values['description']
 
         date_creation = SubElement(item, 'Date')
-        date_creation.text = str(dict_values['creation_date'])
+        date_creation.text = dict_values['creation_date']
 
         upload = SubElement(item, 'upload')
         upload.text = str(dict_values['generation_date'])

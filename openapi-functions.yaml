@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title: Cloud Endpoints + GCF
+  title: Upload a file to bucket and save respective information on firestore
   description: Sample API on Cloud Endpoints with a Google Cloud Functions backend
   version: 1.0.0
 host: getproperties-cvrukhkgjq-uc.a.run.app
@@ -10,22 +10,44 @@ schemes:
 produces:
   - application/json
 paths:
-  /callfunction:
+  /insertData:
     post:
       summary: "Add a new file to the collection"
       operationId: "saveinfo"
       x-google-backend:
         address: https://us-central1-project-test-270001.cloudfunctions.net/post_data
       parameters:
-      - description: "Save file"
+      - name: info
         in: body
-        name: info
         required: true
+        description: "Save text"
         schema:
           $ref: "#/definitions/info"
       responses:
+        200:
+          description: "Success"
+        204:
+          description: "No content"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
         405:
           description: "Invalid input"
+        406:
+          description: "Not aceptable"
+        408:
+          description: "Request timeout"
+        409:
+          description: "Conflict"
+        410:
+          description: "Gone"
+        415:
+          description: "Unsupported Media Type"
+        421:
+          description: "Misdirected Request"
+        429:
+          description: "Too Many Requests"      
 definitions:
   info:
     type: "object"
@@ -37,3 +59,5 @@ definitions:
       creation_date: 
         type: "string"
         format: "date-time"
+      _file:
+        type: "string"  

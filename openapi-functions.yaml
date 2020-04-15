@@ -17,6 +17,11 @@ paths:
       x-google-backend:
         address: https://us-central1-project-test-270001.cloudfunctions.net/post_data
       parameters:
+      - name: _file
+        in: formData
+        required: true
+        type: string
+        description: "The file to upload"
       - name: info
         in: body
         required: true
@@ -59,5 +64,3 @@ definitions:
       creation_date: 
         type: "string"
         format: "date-time"
-      _file:
-        type: "string"  

@@ -16,18 +16,30 @@ paths:
       operationId: "saveinfo"
       x-google-backend:
         address: https://us-central1-project-test-270001.cloudfunctions.net/post_data
+      consumes:
+        - multipart/form-data
       parameters:
-      - name: _file
-        in: formData
-        required: true
-        type: string
-        description: "The file to upload"
-      - name: info
-        in: body
-        required: true
-        description: "Save text"
-        schema:
-          $ref: "#/definitions/info"
+        - name: title
+          in: formData
+          required: true
+          type: string
+          description: "Save text"
+        - name: description
+          in: formData
+          required: true
+          type: string
+          description: "Save text"
+        - name: creation_date
+          in: formData
+          required: true
+          type: string
+          format: "date-time"
+          description: "Save date"
+        - name: _file
+          in: formData
+          required: true
+          type: string
+          description: "The file to upload"
       responses:
         200:
           description: "Success"
@@ -52,15 +64,37 @@ paths:
         421:
           description: "Misdirected Request"
         429:
-          description: "Too Many Requests"      
-definitions:
-  info:
-    type: "object"
-    properties:
-      title: 
-        type: "string"
-      description: 
-        type: "string"
-      creation_date: 
-        type: "string"
-        format: "date-time"
+          description: "Too Many Requests" 
+  /getJson:
+    get:
+      summary: shown xml file inside the bucket in json
+      operationId: convert
+      x-google-backend:
+        address: https://us-central1-project-test-270001.cloudfunctions.net/convert-xml-to-json
+      responses:
+        200:
+          description: "Success"
+        204:
+          description: "No content"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not found"
+        405:
+          description: "Invalid input"
+        406:
+          description: "Not aceptable"
+        408:
+          description: "Request timeout"
+        409:
+          description: "Conflict"
+        410:
+          description: "Gone"
+        415:
+          description: "Unsupported Media Type"
+        421:
+          description: "Misdirected Request"
+        429:
+          description: "Too Many Requests"
+          schema:
+            type: string      

@@ -4,11 +4,17 @@ for any POST request in the API(endpoints) .
 """
 from google.cloud import firestore, storage
 from os import environ
+import datetime
 
 client = firestore.Client()
 collection = environ.get('collection', '')
 storage_client = storage.Client()
 destination_bucket = environ.get('DESTINATION_BUCKET', '')
+
+
+def main(request):
+    data = get_data(request)
+    post_data(*data)
 
 
 def get_data(request):
@@ -20,11 +26,14 @@ def get_data(request):
     creation_date = request_form['creation_date']
 
     for key in request_files.keys():
-        upload_blob(
+        link = upload_blob(
             destination_bucket=destination_bucket,
             destination_blob_name=key,
             content=request_files[key]
         )
+        break
+
+    return title, description, creation_date, link
 
 
 def upload_blob(destination_bucket, content, destination_blob_name):
@@ -33,15 +42,16 @@ def upload_blob(destination_bucket, content, destination_blob_name):
     bucket = storage_client.get_bucket(destination_bucket)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_file(content)
+    return blob.self_link
 
 
-# def post_data():
-#     data = {
-#         u'title': title,
-#         u'description': description,
-#         u'creation_date': creation_date,
-#         u'link': u'link',
-#         u'generation_date': datetime.datetime.now()
-#     }
+def post_data(title, description, creation_date, link):
+    data = {
+        u'title': title,
+        u'description': description,
+        u'creation_date': creation_date,
+        u'link': link,
+        u'generation_date': datetime.datetime.now()
+    }
+    client.collection(collection).document().set(data)
 
-#     client.collection(collection).document().set(data)

@@ -6,7 +6,7 @@ files = {file_name: open(file_name, "rb")}
 data = {
   "title": 'test form data',
   "description": 'test form data',
-  "creation_date": 'test form data',
+  "creation_date": '12/12/2020',
 }
 
 r = requests.post(

@@ -3,7 +3,7 @@ info:
   title: Upload a file to bucket and save respective information on firestore
   description: Sample API on Cloud Endpoints with a Google Cloud Functions backend
   version: 1.0.0
-host: getproperties-cvrukhkgjq-uc.a.run.app
+host: ${CLOUD_RUN_HOSTNAME}
 schemes:
   - https
   - http

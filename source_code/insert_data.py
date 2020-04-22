@@ -49,9 +49,9 @@ def post_data(title, description, creation_date, link):
     data = {
         u'title': title,
         u'description': description,
-        u'creation_date': creation_date,
+        u'creation_date': datetime.datetime.strptime(
+            creation_date, r'%m/%d/%Y %I:%M %p'),
         u'link': link,
         u'generation_date': datetime.datetime.now()
     }
     client.collection(collection).document().set(data)
-

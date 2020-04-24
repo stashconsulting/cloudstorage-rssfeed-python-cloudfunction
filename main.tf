@@ -1,9 +1,15 @@
+locals {
+  project = "project-test-270001"
+  region  = "us-central1"
+  zone    = "us-central1-c"
+}
+
 # Specify the GCP Provider
 provider "google" {
   credentials = file("credentials.json")
-  project     = "project-test-270001"
-  region      = "us-central1"
-  zone        = "us-central1-c"
+  project     = local.project
+  region      = local.region
+  zone        = local.zone
 }
 
 # zip up our source code

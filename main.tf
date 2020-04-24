@@ -1,9 +1,15 @@
+locals {
+  project = "project-test-270001"
+  region  = "us-central1"
+  zone    = "us-central1-c"
+}
+
 # Specify the GCP Provider
 provider "google" {
   credentials = file("credentials.json")
-  project     = "project-test-270001"
-  region      = "us-central1"
-  zone        = "us-central1-c"
+  project     = local.project
+  region      = local.region
+  zone        = local.zone
 }
 
 # zip up our source code
@@ -56,7 +62,7 @@ data "archive_file" "convert_xml_to_json" {
 # cloud storage service
 resource "google_storage_bucket" "source_code_file" {
   name    = "source_code_file"
-  location  = "us-central1"
+  location  = local.region
   force_destroy = true
 }
 
@@ -68,7 +74,7 @@ resource "google_storage_bucket_access_control" "public_rule" {
 
 resource "google_storage_bucket" "image_file_general" {
   name    = "image_file_general"
-  location  = "us-central1"
+  location  = local.region
   force_destroy = true
 }
 
@@ -145,7 +151,7 @@ resource "google_cloudfunctions_function" "function_convert_xml_to_json" {
 # cloud run service
 resource "google_cloud_run_service" "cloudrunsrv" {
   name     = "cloudrunsrv"
-  location = "us-central1"
+  location = local.region
 
   template {
     spec {
@@ -175,4 +181,20 @@ resource "google_endpoints_service" "openapi_service" {
             ""
         )
     })
+}
+
+# local-exec for building a new espv2 beta image 
+resource "null_resource" "building_new_image" {
+  provisioner "local-exec" {
+    command = "chmod +x gcloud_build_image; ./gcloud_build_image -s $cloud_run_hostname -c $config_id -p  $project_id"
+    environment = {
+      config_id = "${google_endpoints_service.openapi_service.config_id}"
+      cloud_run_hostname = replace(
+            "${google_cloud_run_service.cloudrunsrv.status[0].url}",
+            "https://",
+            ""
+        )
+      project_id = local.project
+    }
+  }
 }

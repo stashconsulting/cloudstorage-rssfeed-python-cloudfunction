@@ -62,7 +62,7 @@ data "archive_file" "convert_xml_to_json" {
 # cloud storage service
 resource "google_storage_bucket" "source_code_file" {
   name    = "source_code_file"
-  location  = "us-central1"
+  location  = local.region
   force_destroy = true
 }
 
@@ -74,7 +74,7 @@ resource "google_storage_bucket_access_control" "public_rule" {
 
 resource "google_storage_bucket" "image_file_general" {
   name    = "image_file_general"
-  location  = "us-central1"
+  location  = local.region
   force_destroy = true
 }
 
@@ -151,7 +151,7 @@ resource "google_cloudfunctions_function" "function_convert_xml_to_json" {
 # cloud run service
 resource "google_cloud_run_service" "cloudrunsrv" {
   name     = "cloudrunsrv"
-  location = "us-central1"
+  location = local.region
 
   template {
     spec {

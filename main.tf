@@ -185,12 +185,23 @@ resource "google_endpoints_service" "openapi_service" {
     })
 }
 
-# local-exec for building a new espv2 beta image.
+# local-exec for building a new espv2 beta image and redeploy the ESPv2 Beta Cloud Run service with the new image
 resource "null_resource" "building_new_image" {
   provisioner "local-exec" {
-    command = "chmod +x gcloud_build_image; ./gcloud_build_image -s $cloud_run_hostname -c $config_id -p ${local.project};"
+    command = <<EOF
+      chmod +x gcloud_build_image;
+
+      ./gcloud_build_image -s $cloud_run_hostname -c $config_id -p ${local.project};
+
+      gcloud run deploy $cloud_run_service_name \
+      --image="gcr.io/${local.project}/endpoints-runtime-serverless:$cloud_run_hostname-$config_id" \
+      --allow-unauthenticated \
+      --platform managed \
+      --project=${local.project}
+      EOF
     environment = {
       config_id = "${google_endpoints_service.openapi_service.config_id}"
+      cloud_run_service_name = "${google_cloud_run_service.cloudrunsrv.name}"
       cloud_run_hostname = "${google_endpoints_service.openapi_service.service_name}"
     }
   }

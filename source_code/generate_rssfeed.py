@@ -45,7 +45,7 @@ def gather_items(parent_element):
         description.text = dict_values['description']
 
         date_creation = SubElement(item, 'Date')
-        date_creation.text = dict_values['creation_date']
+        date_creation.text = str(dict_values['creation_date'])
 
         upload = SubElement(item, 'upload')
         upload.text = str(dict_values['generation_date'])

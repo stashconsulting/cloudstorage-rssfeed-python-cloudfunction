@@ -3,7 +3,7 @@ info:
   title: Upload a file to bucket and save respective information on firestore
   description: Sample API on Cloud Endpoints with a Google Cloud Functions backend
   version: 1.0.0
-host: ${CLOUD_RUN_HOSTNAME}
+host: ${cloud_run_hostname}
 schemes:
   - https
   - http
@@ -15,7 +15,7 @@ paths:
       summary: "Add a new file to the collection"
       operationId: "saveinfo"
       x-google-backend:
-        address: https://us-central1-project-test-270001.cloudfunctions.net/post_data
+        address: ${inserdata_functionurl} 
       consumes:
         - multipart/form-data
       parameters:
@@ -70,7 +70,7 @@ paths:
       summary: shown xml file inside the bucket in json
       operationId: convert
       x-google-backend:
-        address: https://us-central1-project-test-270001.cloudfunctions.net/convert-xml-to-json
+        address: ${getjson_functionurl}
       responses:
         200:
           description: "Success"

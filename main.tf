@@ -167,34 +167,31 @@ resource "google_cloud_run_service" "cloudrunsrv" {
   }
 }
 
-# cloud endpoints service
+# cloud endpoints service, replacing host and address functions values on openapi file
 resource "google_endpoints_service" "openapi_service" {  
     service_name   = replace(
-        "${google_cloud_run_service.cloudrunsrv.status[0].url}",
-        "https://",
-        ""
+      "${google_cloud_run_service.cloudrunsrv.status[0].url}",
+      "https://",
+      ""
     )
     openapi_config = templatefile("${path.module}/openapi-functions.yaml", {
-        CLOUD_RUN_HOSTNAME = replace(
-            "${google_cloud_run_service.cloudrunsrv.status[0].url}",
-            "https://",
-            ""
-        )
+        cloud_run_hostname = replace(
+          "${google_cloud_run_service.cloudrunsrv.status[0].url}",
+          "https://",
+          ""
+        ),
+        inserdata_functionurl = google_cloudfunctions_function.function_insert_data.https_trigger_url,
+        getjson_functionurl = google_cloudfunctions_function.function_convert_xml_to_json.https_trigger_url
     })
 }
 
-# local-exec for building a new espv2 beta image 
+# local-exec for building a new espv2 beta image.
 resource "null_resource" "building_new_image" {
   provisioner "local-exec" {
-    command = "chmod +x gcloud_build_image; ./gcloud_build_image -s $cloud_run_hostname -c $config_id -p  $project_id"
+    command = "chmod +x gcloud_build_image; ./gcloud_build_image -s $cloud_run_hostname -c $config_id -p ${local.project};"
     environment = {
       config_id = "${google_endpoints_service.openapi_service.config_id}"
-      cloud_run_hostname = replace(
-            "${google_cloud_run_service.cloudrunsrv.status[0].url}",
-            "https://",
-            ""
-        )
-      project_id = local.project
+      cloud_run_hostname = "${google_endpoints_service.openapi_service.service_name}"
     }
   }
 }

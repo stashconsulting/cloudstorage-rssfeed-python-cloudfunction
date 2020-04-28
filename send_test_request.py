@@ -6,11 +6,11 @@ files = {file_name: open(file_name, "rb")}
 data = {
   "title": 'test form data',
   "description": 'test form data',
-  "creation_date": '12/12/2020',
+  "creation_date": '12/12/2019 10:20 PM',
 }
 
 r = requests.post(
-    "https://getproperties-cvrukhkgjq-uc.a.run.app/insertData",
+    "https://cloudrunsrv-cvrukhkgjq-uc.a.run.app/insertData",
     data=data,
     files=files,
 )

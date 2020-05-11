@@ -1,0 +1,22 @@
+steps:
+# Fetch the source code
+- name: gcr.io/cloud-builders/git
+  args: ['clone', 'https://github.com/stashconsulting/cloudstorage-rssfeed-python-cloudfunction.git']
+
+# Using public terraform Docker image
+- name: hashicorp/terraform
+  args: ['init']
+
+
+# Create the resources using Terraform
+- name: hashicorp/terraform
+  id: terraform-apply
+  args: ['apply', '-auto-approve']
+  env:
+  - 'DESTINATION_BUCKET=bucket_file_tf'
+  - 'collection=image_file_details'  
+
+# Build and run the Dataflow pipeline (staged template)
+- name: gcr.io/cloud-builders/gradle
+  args: ['build', 'run']
+  waitFor: ['terraform-apply']

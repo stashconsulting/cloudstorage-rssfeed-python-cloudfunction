@@ -6,7 +6,6 @@ locals {
 
 # Specify the GCP Provider
 provider "google" {
-  credentials = file("credentials.json")
   project     = local.project
   region      = local.region
   zone        = local.zone

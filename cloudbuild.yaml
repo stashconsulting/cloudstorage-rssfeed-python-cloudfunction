@@ -7,6 +7,10 @@ steps:
 - name: hashicorp/terraform
   args: ['init']
 
+# Copy the results from the Google Cloud Storage bucket
+- name: gcr.io/cloud-builders/gsutil
+  id: copy-result
+  args: ['cp', 'gs://tfstatebackup/*', '.']
 
 # Create the resources using Terraform
 - name: hashicorp/terraform
@@ -16,7 +20,7 @@ steps:
   - 'DESTINATION_BUCKET=bucket_file_tf'
   - 'collection=image_file_details'  
 
-# Build and run the Dataflow pipeline (staged template)
-- name: gcr.io/cloud-builders/gradle
-  args: ['build', 'run']
-  waitFor: ['terraform-apply']
+# Copy the new results back into the bucket.
+- name: gcr.io/cloud-builders/gsutil
+  id: put-result
+  args: ['cp', '-r', 'terraform.tfstate*', 'gs://tfstatebackup/']

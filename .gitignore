@@ -133,6 +133,12 @@ dmypy.json
 
 # pytype static type analyzer
 .pytype/
+
 credentials.json
 .terraform
 *.zip
+.DS_Store
+deployment.sh
+terraform.tfstate
+terraform.tfstate.backup
+test.jpeg

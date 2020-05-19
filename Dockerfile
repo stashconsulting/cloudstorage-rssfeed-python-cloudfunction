@@ -2,7 +2,9 @@ FROM kong
 
 WORKDIR /etc/kong/
 
-COPY ./kong.yml kong.yml 
+COPY ./kong.yml kong.yml
+
+COPY kong.conf /etc/kong/
 
 ENV KONG_DATABASE=off
 

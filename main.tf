@@ -149,13 +149,13 @@ resource "google_cloudfunctions_function" "function_convert_xml_to_json" {
 
 # cloud run service
 resource "google_cloud_run_service" "cloudrunsrv" {
-  name     = "api"
+  name     = "kongapi"
   location = local.region
 
   template {
     spec {
       containers {
-        image = "gcr.io/endpoints-release/endpoints-runtime-serverless:2"
+        image = "gcr.io/project-test-270001/kong_dbless:0.3"
       }
     }
   }

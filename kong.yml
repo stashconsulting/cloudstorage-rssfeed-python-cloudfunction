@@ -42,3 +42,4 @@ consumers:
 - username: my-user
   keyauth_credentials:
   - key: my-key
+  

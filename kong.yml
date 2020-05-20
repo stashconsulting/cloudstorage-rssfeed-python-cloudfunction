@@ -1,0 +1,44 @@
+# ------------------------------------------------------------------------------
+# This is an example file to get you started with using
+# declarative configuration in Kong.
+# ------------------------------------------------------------------------------
+
+# Metadata fields start with an underscore (_)
+# Fields that do not start with an underscore represent Kong entities and attributes
+
+# _format_version is mandatory,
+# it specifies the minimum version of Kong that supports the format
+
+_format_version: "1.1"
+
+# Each Kong entity (core entity or custom entity introduced by a plugin)
+# can be listed in the top-level as an array of objects:
+
+services:
+- name: my-service
+  url: https://example.com
+  routes:
+  - name: my-route
+    paths:
+    - /
+
+- name: insert-data
+  url: https://us-central1-project-test-270001.cloudfunctions.net/function_insert_data
+  routes:
+  - name: my-route
+    hosts: ["insert-data"]
+    paths:
+    - /
+
+- name: get-json
+  url: https://us-central1-project-test-270001.cloudfunctions.net/function_convert_xml_to_json
+  routes:
+  - name: my-route
+    hosts: ["get-json"]
+    paths:
+    - /
+    
+consumers:
+- username: my-user
+  keyauth_credentials:
+  - key: my-key

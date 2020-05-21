@@ -3,6 +3,22 @@ steps:
 - name: gcr.io/cloud-builders/git
   args: ['clone', 'https://github.com/stashconsulting/cloudstorage-rssfeed-python-cloudfunction.git']
 
+# This step builds the container image.
+- name: 'gcr.io/cloud-builders/docker'
+  id: Build
+  args:
+  - 'build'
+  - '-t'
+  - 'gcr.io/$PROJECT_ID/kong_dbless:$SHORT_SHA'
+  - '.'
+
+# This step pushes the image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  id: Push
+  args:
+  - 'push'
+  - 'gcr.io/$PROJECT_ID/kong_dbless:$SHORT_SHA'
+
 # Using public terraform Docker image
 - name: hashicorp/terraform
   args: ['init']

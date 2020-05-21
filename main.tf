@@ -147,6 +147,30 @@ resource "google_cloudfunctions_function" "function_convert_xml_to_json" {
   }
 }
 
+resource "google_cloudfunctions_function_iam_binding" "insert_data" {
+  cloud_function = google_cloudfunctions_function.function_insert_data.name
+  role = "roles/cloudfunctions.invoker"
+  members = [
+    "allUsers",
+  ]
+}
+
+resource "google_cloudfunctions_function_iam_binding" "generate_rssfeed" {
+  cloud_function = google_cloudfunctions_function.function_generate_rssfeed.name
+  role = "roles/cloudfunctions.invoker"
+  members = [
+    "allUsers",
+  ]
+}
+
+resource "google_cloudfunctions_function_iam_binding" "convert_xml_to_json" {
+  cloud_function = google_cloudfunctions_function.function_convert_xml_to_json.name
+  role = "roles/cloudfunctions.invoker"
+  members = [
+    "allUsers",
+  ]
+}
+
 # cloud run service
 resource "google_cloud_run_service" "cloudrunsrv" {
   name     = "kongapi"

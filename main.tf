@@ -1,12 +1,11 @@
 locals {
-  project = "project-test-270001"
   region  = "us-central1"
   zone    = "us-central1-c"
 }
 
 # Specify the GCP Provider
 provider "google" {
-  project     = local.project
+  project     = var.project
   region      = local.region
   zone        = local.zone
 }
@@ -179,7 +178,7 @@ resource "google_cloud_run_service" "cloudrunsrv" {
   template {
     spec {
       containers {
-        image = "gcr.io/project-test-270001/kong_dbless:0.3"
+        image = var.image_id
       }
     }
   }

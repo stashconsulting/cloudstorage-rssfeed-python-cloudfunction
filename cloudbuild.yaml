@@ -25,7 +25,10 @@ steps:
 # Create the resources using Terraform
 - name: hashicorp/terraform
   id: terraform-apply
-  args: ['apply', '-auto-approve', '-var "image_id=gcr.io/$PROJECT_ID/kong_dbless:$SHORT_SHA"'] 
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - terraform apply -auto-approve -var image_id=gcr.io/$PROJECT_ID/kong_dbless:$SHORT_SHA 
 
 # Copy the new results back into the bucket.
 - name: gcr.io/cloud-builders/gsutil

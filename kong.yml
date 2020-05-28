@@ -15,29 +15,34 @@ _format_version: "1.1"
 # can be listed in the top-level as an array of objects:
 
 services:
-- name: my-service
-  url: https://example.com
-  routes:
-  - name: my-route
-    paths:
-    - /
-
 - name: insert-data
+  connect_timeout: 60000
+  host: us-central1-project-test-270001.cloudfunctions.net
   url: https://us-central1-project-test-270001.cloudfunctions.net/function_insert_data
+  path: /insert-data
   routes:
-  - name: my-route
+  - name: insert-data-route
+    methods:
+    - POST
     hosts: ["insert-data"]
     paths:
     - /
-
+    protocols:
+    - http
+    - https
 - name: get-json
+  connect_timeout: 60000
+  host: us-central1-project-test-270001.cloudfunctions.net
   url: https://us-central1-project-test-270001.cloudfunctions.net/function_convert_xml_to_json
+  path: /get-json
   routes:
-  - name: my-route
+  - name: get-json-route
     hosts: ["get-json"]
     paths:
     - /
-    
+    protocols:
+    - http
+    - https 
 consumers:
 - username: my-user
   keyauth_credentials:

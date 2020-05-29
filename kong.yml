@@ -17,14 +17,15 @@ _format_version: "1.1"
 services:
 - name: insert-data
   connect_timeout: 60000
-  host: us-central1-project-test-270001.cloudfunctions.net
   url: https://us-central1-project-test-270001.cloudfunctions.net/function_insert_data
   path: /insert-data
   routes:
   - name: insert-data-route
     methods:
     - POST
-    hosts: ["insert-data"]
+    headers:
+      function:
+        - insert-data
     paths:
     - /
     protocols:
@@ -32,12 +33,13 @@ services:
     - https
 - name: get-json
   connect_timeout: 60000
-  host: us-central1-project-test-270001.cloudfunctions.net
   url: https://us-central1-project-test-270001.cloudfunctions.net/function_convert_xml_to_json
   path: /get-json
   routes:
   - name: get-json-route
-    hosts: ["get-json"]
+    headers:
+      function:
+        - get-json
     paths:
     - /
     protocols:

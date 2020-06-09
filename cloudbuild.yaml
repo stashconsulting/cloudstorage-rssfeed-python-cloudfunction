@@ -18,7 +18,7 @@ steps:
   entrypoint: 'bash'
   args: 
   - '-c'
-  - terraform apply -auto-approve -var image_id=gcr.io/$PROJECT_ID/kong_dbless:$SHORT_SHA 
+  - terraform apply -auto-approve -var image_id=gcr.io/$PROJECT_ID/kong_dbless:$SHORT_SHA || echo "failure"
 
 # Copy the new results back into the bucket.
 - name: gcr.io/cloud-builders/gsutil

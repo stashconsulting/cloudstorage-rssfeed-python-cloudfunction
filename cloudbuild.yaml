@@ -7,10 +7,10 @@ steps:
 - name: gcr.io/project-test-270001/terraform-docker:0.1
   args: ['init']
 
-# Copy the results from the Google Cloud Storage bucket
+# Syncroning content Google Cloud Storage bucket and directories
 - name: gcr.io/cloud-builders/gsutil
   id: copy-result
-  args: ['cp', 'gs://tfstatebackup/*', '.']
+  args: ['rsync', 'gs://tfstatebackup', '.']
 
 # Create the resources using Terraform
 - name: gcr.io/project-test-270001/terraform-docker:0.1

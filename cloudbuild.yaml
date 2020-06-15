@@ -4,7 +4,7 @@ steps:
   args: ['clone', 'https://github.com/stashconsulting/cloudstorage-rssfeed-python-cloudfunction.git']
 
 # Using public terraform Docker image
-- name: gcr.io/project-test-270001/terraform-docker:0.1
+- name: glad23/terraform-docker:latest
   args: ['init']
 
 # Syncroning content Google Cloud Storage bucket and the Directory

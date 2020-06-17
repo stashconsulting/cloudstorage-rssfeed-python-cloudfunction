@@ -188,34 +188,11 @@ resource "google_cloud_run_service" "cloudrunsrv" {
     latest_revision = true
   }
   depends_on = [
-    null_resource.building_docker_image,
+    module.docker_builder,
   ]
 }
 
-# local-exec for building the docker image and push it from terraform
-resource "null_resource" "building_docker_image" {
-  triggers = {
-    image_id = var.image_id
-  }
-  provisioner "local-exec" {
-    command = <<EOF
-      docker build -t kongdbless:latest .
-      docker tag kongdbless:latest ${var.image_id}
-      docker push ${var.image_id}
-    EOF
-  }
+module "docker_builder" {
+  source  = "./modules/docker_builder/"
+  image_id = var.image_id
 }
-
-# data "google_iam_policy" "noauth" {
-#   binding {
-#     role = "roles/run.invoker"
-#     members = [
-#       "allUsers",
-#     ]
-#   }
-# }
-
-# resource "google_cloud_run_service_iam_policy" "noauth" {
-#   service     = google_cloud_run_service.cloudrunsrv.name
-#   policy_data = data.google_iam_policy.noauth.policy_data
-# }

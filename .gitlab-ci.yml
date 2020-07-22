@@ -1,17 +1,5 @@
 stages:
-  - prepare
   - deploy
-
-prepare:
-  image: alpine
-  stage: prepare
-  script:
-    - echo -n $service_account > credentials.json
-  artifacts:
-    paths:
-      - credentials.json
-  tags:
-    - docker_image
 
 deploy:
   image: 
@@ -19,6 +7,7 @@ deploy:
     entrypoint: [""]
   stage: deploy
   script:
+    - echo -n $service_account > credentials.json
     - gcloud auth activate-service-account --key-file credentials.json
     - gcloud auth configure-docker
     - terraform init

@@ -1,0 +1,16 @@
+stages:
+  - deploy
+
+deploy:
+  image: 
+    name: stashconsulting/terraform-docker:gcloud-latest
+    entrypoint: [""]
+  stage: deploy
+  script:
+    - echo -n $service_account > credentials.json
+    - gcloud auth activate-service-account --key-file credentials.json
+    - gcloud auth configure-docker
+    - terraform init
+    - terraform apply -auto-approve -var image_id=$image -var project=$project
+  tags:
+    - docker_image

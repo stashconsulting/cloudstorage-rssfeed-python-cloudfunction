@@ -1,5 +1,5 @@
 steps:
-# Fetch the source code
+# Fetch the source code ###
 - name: gcr.io/cloud-builders/git
   args: ['clone', 'https://github.com/stashconsulting/cloudstorage-rssfeed-python-cloudfunction.git']
 

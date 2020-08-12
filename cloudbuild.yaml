@@ -4,7 +4,7 @@ steps:
   args: ['clone', 'https://github.com/stashconsulting/cloudstorage-rssfeed-python-cloudfunction.git']
 
 # Using public terraform Docker image
-- name: glad23/terraform-docker:latest
+- name: stashconsulting/terraform-docker:entrypoint-latest
   args: ['init']
 
 # Syncroning content Google Cloud Storage bucket and the Directory
@@ -13,7 +13,7 @@ steps:
   args: ['rsync', 'gs://tfstatebackup', '.']
 
 # Create the resources using Terraform
-- name: glad23/terraform-docker:latest
+- name: stashconsulting/terraform-docker:entrypoint-latest
   id: terraform-apply
   entrypoint: 'bash'
   args: 

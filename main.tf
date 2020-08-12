@@ -1,3 +1,12 @@
+terraform {
+  backend "remote" {
+    organization = "stashconsulting-labs"
+    workspaces {
+      name = "cloudstorage-rssfeed-python-cloudfunction"
+    }
+  }
+}
+
 locals {
   region  = "us-central1"
   zone    = "us-central1-c"

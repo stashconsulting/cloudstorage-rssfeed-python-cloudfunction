@@ -1,3 +1,5 @@
+# Using the terraform cloud for the purpose of managing the status.
+
 stages:
   - deploy
 

@@ -7,10 +7,9 @@ deploy:
     entrypoint: [""]
   stage: deploy
   script:
-    - echo -n $service_account > credentials.json
-    - gcloud auth activate-service-account --key-file credentials.json
     - gcloud auth configure-docker
     - terraform init
-    - terraform apply -auto-approve -var image_id=$image -var project=$project
+    - gsutil rsync gs://tfstatebackup .
+    - terraform apply -auto-approve -var image_id=$image -var project=$project || echo "failure"
   tags:
     - docker_image

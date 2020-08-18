@@ -9,7 +9,7 @@ deploy:
   script:
     - gcloud auth configure-docker
     - terraform init
-    - gsutil rsync gs://tfstatebackup2 .
+    - gsutil rsync gs://tfstatebackup .
     - terraform apply -auto-approve -var image_id=$image -var project=$project || echo "failure"
   tags:
     - docker_image

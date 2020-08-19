@@ -10,8 +10,7 @@ deploy:
   stage: deploy
   script:
     - gcloud auth configure-docker
-    - terraform --version
-    - echo $token | terraform login
+    - sed -i "s/TOKEN_TO_BE_REPLACED/${token}/g" .terraform.d/credentials.tfrc.json
     - terraform init
     - terraform apply -auto-approve -var image_id=$image -var project=$project || echo "failure"
   tags:

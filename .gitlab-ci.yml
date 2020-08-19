@@ -10,6 +10,7 @@ deploy:
   stage: deploy
   script:
     - gcloud auth configure-docker
+    - terraform --version
     - echo $token | terraform login
     - terraform init
     - terraform apply -auto-approve -var image_id=$image -var project=$project || echo "failure"

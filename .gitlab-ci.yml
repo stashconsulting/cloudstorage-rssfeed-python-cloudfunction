@@ -5,7 +5,7 @@ stages:
 
 deploy:
   image: 
-    name: stashconsulting/terraform-docker:gcloud-latest
+    name: stashconsulting/terraform-docker:gcloud-f326556
     entrypoint: [""]
   stage: deploy
   script:

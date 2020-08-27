@@ -1,15 +1,18 @@
+# Using the terraform cloud for the purpose of managing the status.
+
 stages:
   - deploy
 
 deploy:
   image: 
-    name: stashconsulting/terraform-docker:gcloud-latest
+    name: stashconsulting/terraform-docker:gcloud-f326556
     entrypoint: [""]
   stage: deploy
   script:
     - gcloud auth configure-docker
+    - sed -i "s/TOKEN_TO_BE_REPLACED/${token}/g" .terraform.d/credentials.tfrc.json
+    - mkdir ~/.terraform.d/ && cp .terraform.d/credentials.tfrc.json ~/.terraform.d/
     - terraform init
-    - gsutil rsync gs://tfstatebackup .
     - terraform apply -auto-approve -var image_id=$image -var project=$project || echo "failure"
   tags:
     - docker_image
